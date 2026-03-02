@@ -27,8 +27,9 @@ export async function GET() {
     for (const row of assessments) {
       const id = row.domain_id
       if (!domainMap[id]) {
+        const domainName = Array.isArray(row.domains) ? row.domains[0]?.name : (row.domains as { name?: string } | null)?.name
         domainMap[id] = {
-          domain_name: row.domains?.name ?? `域${id}`,
+          domain_name: domainName ?? `域${id}`,
           avg_score: 0,
           priority_score: 0,
           priority_notes: null,

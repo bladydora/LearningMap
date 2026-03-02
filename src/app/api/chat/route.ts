@@ -1,8 +1,6 @@
 // src/app/api/chat/route.ts
 // 核心路由：用户输入 → 档案注入 → LLM → 解析 → 写库 → 返回
 
-export const runtime = 'nodejs'
-
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { callLLM } from '@/lib/llm'
@@ -126,14 +124,9 @@ export async function POST(req: NextRequest) {
     })
 
   } catch (err) {
-    console.error('/api/chat error:', err)
-    const message =
-      err instanceof Error
-        ? err.message
-        : typeof err === 'string'
-        ? err
-        : '服务器错误，请稍后重试'
-
-    return NextResponse.json({ error: message }, { status: 500 })
+    const msg = err instanceof Error ? err.message : String(err)
+    console.error('/api/chat error:', msg)
+    // 开发阶段返回真实错误便于调试，上线前改回固定文案
+    return NextResponse.json({ error: msg }, { status: 500 })
   }
 }
